@@ -43,10 +43,13 @@
     <div class="disco-layer"></div>
     <div id="petals-container"></div>
 
-    <div class="music-control" onclick="toggleVibe(this)">
+    <div class="music-control" onclick="toggleMusic(this)">
         <span class="music-tooltip">Tap for Magic!</span>
-        <i class="fas fa-wand-magic-sparkles"></i>
+        <i class="fas fa-music"></i>
     </div>
+    <audio id="bg-music" loop>
+        <source src="audio/background_music.mp3" type="audio/mpeg">
+    </audio>
 
     <header id="hero">
         <div class="glass-overlay" data-aos="fade-up" data-aos-duration="1200">
@@ -163,9 +166,14 @@
         <div class="glass-panel" data-aos="tilt-up" data-aos-duration="1000">
             <h2 class="section-title text-gradient-gold">Are You Coming?</h2>
             <p style="font-weight: bold; font-size: 1.1rem; color: #333;">We would be delighted to have you!</p>
-            <a id="rsvp-link" href="#" target="_blank" class="btn-whatsapp">
-                <i class="fab fa-whatsapp"></i> Count Me In!
-            </a>
+            <div class="button-group">
+                <a id="rsvp-devi" href="#" target="_blank" class="btn-whatsapp">
+                    <i class="fab fa-whatsapp"></i> RSVP to Devi
+                </a>
+                <a id="rsvp-mohan" href="#" target="_blank" class="btn-whatsapp">
+                    <i class="fab fa-whatsapp"></i> RSVP to Mohan
+                </a>
+            </div>
         </div>
     </section>
 
@@ -191,7 +199,8 @@
         // =========================================================
         const COUPLE_NAMES = "Mohan & Devi";
         const VENUE_NAME = "Sri Kumutavalli Thirumana Arangam, Minjur";
-        const RSVP_WHATSAPP_NUMBER = "91XXXXXXXXX"; // TODO: this still has placeholder X's — swap in the real 10-digit number before sharing
+        const RSVP_WHATSAPP_DEVI = "919080567474";
+        const RSVP_WHATSAPP_MOHAN = "916381777273";
         const MUHURTHAM_START = "2026-09-13T06:30:00";
         const MUHURTHAM_END = "2026-09-13T07:30:00";
         // =========================================================
@@ -218,8 +227,9 @@
             document.getElementById('directions-link').href = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
             document.getElementById('map-embed').src = `https://www.google.com/maps?q=${mapQuery}&output=embed`;
 
-            const rsvpText = encodeURIComponent(`Hi Mohan & Devi! I am delighted to attend your wedding! See you there.`);
-            document.getElementById('rsvp-link').href = `https://wa.me/${RSVP_WHATSAPP_NUMBER}?text=${rsvpText}`;
+            const rsvpText = encodeURIComponent(`Hi! I am delighted to attend your wedding! See you there.`);
+            document.getElementById('rsvp-devi').href = `https://wa.me/${RSVP_WHATSAPP_DEVI}?text=${rsvpText}`;
+            document.getElementById('rsvp-mohan').href = `https://wa.me/${RSVP_WHATSAPP_MOHAN}?text=${rsvpText}`;
         })();
 
         // 3. REALISTIC 3D PETALS
@@ -270,15 +280,25 @@
         setInterval(updateTimer, 1000);
         updateTimer();
 
-        // 5. VIBE MODE TOGGLE (no audio asset provided — toggles the dark/disco theme only)
-        function toggleVibe(btn) {
+        // 5. MUSIC + VIBE MODE (playing the song also switches on the dark/gold theme)
+        function toggleMusic(btn) {
             const tooltip = btn.querySelector('.music-tooltip');
             if (tooltip) tooltip.style.display = 'none';
 
+            const audio = document.getElementById('bg-music');
             const icon = btn.querySelector('i');
-            const active = document.body.classList.toggle('vibe-mode');
-            btn.classList.toggle('playing', active);
-            icon.className = active ? 'fas fa-star' : 'fas fa-wand-magic-sparkles';
+
+            if (audio.paused) {
+                audio.play();
+                icon.className = 'fas fa-pause';
+                btn.classList.add('playing');
+                document.body.classList.add('vibe-mode');
+            } else {
+                audio.pause();
+                icon.className = 'fas fa-music';
+                btn.classList.remove('playing');
+                document.body.classList.remove('vibe-mode');
+            }
         }
 
         // 6. FIREWORKS BLAST & HEARTS

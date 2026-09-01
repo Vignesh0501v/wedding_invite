@@ -464,6 +464,12 @@ footer {
     justify-content: center;
     flex-wrap: wrap;
     gap: 15px;
+    margin-top: 20px;
+}
+
+.button-group .btn-whatsapp,
+.button-group .btn-gpay {
+    margin-top: 0;
 }
 
 .btn-calendar, .btn-direction, .btn-whatsapp, .btn-gpay {

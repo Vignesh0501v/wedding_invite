@@ -44,7 +44,7 @@
     <link href="css/site.css" rel="stylesheet">
 
 </head>
-<body data-aos-easing="ease-out-back" data-aos-duration="1000" data-aos-delay="0">
+<body class="vibe-mode" data-aos-easing="ease-out-back" data-aos-duration="1000" data-aos-delay="0">
     <div id="intro-screen">
         <div class="intro-content">
             <h1 class="intro-title">Mohan 💕 Devi</h1>
@@ -141,8 +141,8 @@
                 <div class="event-details">
                     <h3>Reception</h3>
                     <p class="date">Sep 12, 2026</p>
-                    <p class="time">6:00 AM Onwards</p>
-                    <p class="desc">Join us for a joyful morning together.</p>
+                    <p class="time">6:00 PM Onwards</p>
+                    <p class="desc">Join us for a joyful evening together.</p>
                 </div>
             </div>
 
@@ -212,7 +212,7 @@
         // =========================================================
         const COUPLE_NAMES = "Mohan & Devi";
         const VENUE_NAME = "Sri Kumutavalli Thirumana Arangam, Minjur";
-        const RSVP_WHATSAPP_DEVI = "919080567474";
+        const RSVP_WHATSAPP_DEVI = "919080567475";
         const RSVP_WHATSAPP_MOHAN = "916381777273";
         const MUHURTHAM_START = "2026-09-13T06:30:00";
         const MUHURTHAM_END = "2026-09-13T07:30:00";
@@ -293,24 +293,42 @@
         setInterval(updateTimer, 1000);
         updateTimer();
 
-        // 5. MUSIC + VIBE MODE (playing the song also switches on the dark/gold theme)
-        function toggleMusic(btn) {
-            const tooltip = btn.querySelector('.music-tooltip');
+        // 5. MUSIC — auto-starts once the intro screen finishes. Browsers that
+        // block unrequested autoplay get a fallback: playback starts on the
+        // visitor's first tap/click anywhere on the page instead.
+        const bgMusic = document.getElementById('bg-music');
+        const musicBtn = document.querySelector('.music-control');
+
+        function setMusicUI(isPlaying) {
+            const icon = musicBtn.querySelector('i');
+            icon.className = isPlaying ? 'fas fa-pause' : 'fas fa-music';
+            musicBtn.classList.toggle('playing', isPlaying);
+            const tooltip = musicBtn.querySelector('.music-tooltip');
             if (tooltip) tooltip.style.display = 'none';
+        }
 
-            const audio = document.getElementById('bg-music');
-            const icon = btn.querySelector('i');
+        function startMusicOnFirstInteraction() {
+            const start = () => {
+                bgMusic.play().then(() => setMusicUI(true)).catch(() => {});
+            };
+            document.addEventListener('click', start, { once: true });
+            document.addEventListener('touchstart', start, { once: true });
+        }
 
-            if (audio.paused) {
-                audio.play();
-                icon.className = 'fas fa-pause';
-                btn.classList.add('playing');
-                document.body.classList.add('vibe-mode');
+        // Roughly matches when #intro-screen finishes fading out (~4.2s)
+        setTimeout(() => {
+            const p = bgMusic.play();
+            if (p && p.then) {
+                p.then(() => setMusicUI(true)).catch(startMusicOnFirstInteraction);
+            }
+        }, 4200);
+
+        function toggleMusic(btn) {
+            if (bgMusic.paused) {
+                bgMusic.play().then(() => setMusicUI(true)).catch(() => {});
             } else {
-                audio.pause();
-                icon.className = 'fas fa-music';
-                btn.classList.remove('playing');
-                document.body.classList.remove('vibe-mode');
+                bgMusic.pause();
+                setMusicUI(false);
             }
         }
 

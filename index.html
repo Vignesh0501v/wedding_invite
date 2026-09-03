@@ -318,22 +318,18 @@
             bgMusic.play().then(() => setMusicUI(true)).catch(() => {});
         }
 
+        let entered = false;
         function enterSite() {
+            if (entered) return;
+            entered = true;
             introScreen.classList.add('dismiss');
             playMusic();
         }
-        introScreen.addEventListener('click', enterSite, { once: true });
-        introScreen.addEventListener('touchstart', enterSite, { once: true });
-
-        // Safety net: if nobody taps the intro within 6s, dismiss it anyway so
-        // no one is stuck on a black screen — music then starts on whatever
-        // they tap next, anywhere on the page.
-        setTimeout(() => {
-            if (introScreen.classList.contains('dismiss')) return;
-            introScreen.classList.add('dismiss');
-            document.addEventListener('click', playMusic, { once: true });
-            document.addEventListener('touchstart', playMusic, { once: true });
-        }, 6000);
+        // Bound to several gesture types for cross-browser reliability (iOS
+        // Safari in particular wants the tap to actually complete).
+        ['click', 'touchend', 'touchstart', 'keydown'].forEach(evt => {
+            introScreen.addEventListener(evt, enterSite, { passive: true });
+        });
 
         function toggleMusic(btn) {
             if (bgMusic.paused) {

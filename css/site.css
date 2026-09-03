@@ -638,7 +638,7 @@ footer {
     pointer-events: none;
     z-index: 1999;
     width: 30px;
-    height: 72px;
+    height: 75px;
     filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));
     animation: featherDrift var(--duration) ease-out forwards;
 }

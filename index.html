@@ -353,6 +353,44 @@
         }
 
         // 6. FIREWORKS BLAST & HEARTS
+        // Builds a natural-looking peacock feather once (dense, curved barbs
+        // radiating the full length of the stem, gathered into the classic
+        // bronze/teal/navy "eye" near the top) and reuses the same markup for
+        // every feather spawned by sendLove().
+        function buildFeatherSvg() {
+            const stemX = 30, stemTopY = 8, stemBotY = 148;
+            const pairs = 28;
+            const g1 = [40, 110, 60], g2 = [150, 175, 70]; // deep green (base) -> golden-olive (tip)
+            let barbs = '';
+            for (let i = 0; i <= pairs; i++) {
+                const t = i / pairs; // 0 = base, 1 = tip
+                const y = stemBotY - t * (stemBotY - stemTopY);
+                const len = 4 + 46 * Math.pow(Math.sin(t * Math.PI), 0.85); // tapers to a point at both ends
+                const lift = 10 + t * 20;
+                const r = Math.round(g1[0] + (g2[0] - g1[0]) * t);
+                const gg = Math.round(g1[1] + (g2[1] - g1[1]) * t);
+                const b = Math.round(g1[2] + (g2[2] - g1[2]) * t);
+                const sw = (1.15 - t * 0.45).toFixed(2);
+                const opacity = (0.55 + t * 0.3).toFixed(2);
+                [-1, 1].forEach(side => {
+                    const endX = stemX + side * len;
+                    const endY = y - lift;
+                    const ctrlX = stemX + side * len * 0.6;
+                    const ctrlY = y - lift * 0.3;
+                    barbs += `<path d="M${stemX} ${y.toFixed(1)} Q${ctrlX.toFixed(1)} ${ctrlY.toFixed(1)} ${endX.toFixed(1)} ${endY.toFixed(1)}" stroke="rgb(${r},${gg},${b})" stroke-width="${sw}" fill="none" opacity="${opacity}"/>`;
+                });
+            }
+            return `<svg viewBox="0 0 60 150" width="100%" height="100%">
+                ${barbs}
+                <path d="M30 148 L31 10" stroke="#8a6a3a" stroke-width="1.2"/>
+                <ellipse cx="31" cy="78" rx="19" ry="31" fill="#cdae5c"/>
+                <ellipse cx="31" cy="78" rx="14" ry="23" fill="#2f9e8f"/>
+                <path d="M31 60 C43 65 45 83 32 94 C19 89 17 71 31 60 Z" fill="#0f2148"/>
+                <ellipse cx="28" cy="71" rx="1.6" ry="2.6" fill="#8fb4ff" opacity="0.8"/>
+            </svg>`;
+        }
+        const featherSvg = buildFeatherSvg();
+
         function sendLove() {
             const btn = document.getElementById('loveBtn');
             btn.classList.add('pulse-active');
@@ -402,22 +440,6 @@
 
             // Peacock feathers sweeping up and outward
             const featherCount = isMobile ? 8 : 12;
-            const featherSvg = `<svg viewBox="0 0 60 140" width="100%" height="100%">
-                <path d="M30 90 C10 72 8 38 30 8 C52 38 50 72 30 90 Z" fill="#2f8f5b" opacity="0.32"/>
-                <g stroke="#3f7a4e" stroke-width="0.7" opacity="0.55" fill="none">
-                    <path d="M30 128 L10 116"/><path d="M30 120 L6 106"/><path d="M30 112 L4 96"/>
-                    <path d="M30 104 L5 84"/><path d="M30 96 L8 72"/><path d="M30 88 L12 60"/>
-                    <path d="M30 128 L50 116"/><path d="M30 120 L54 106"/><path d="M30 112 L56 96"/>
-                    <path d="M30 104 L55 84"/><path d="M30 96 L52 72"/><path d="M30 88 L48 60"/>
-                </g>
-                <path d="M30 138 L30 15" stroke="#8a6a3a" stroke-width="1.4"/>
-                <ellipse cx="30" cy="46" rx="19" ry="30" fill="none" stroke="#caa23e" stroke-width="2.5"/>
-                <ellipse cx="30" cy="46" rx="15" ry="24" fill="#2f8f5b"/>
-                <ellipse cx="30" cy="46" rx="11" ry="18" fill="#e8c04a"/>
-                <path d="M30 29 C41 34 43 51 31 61 C20 56 18 39 30 29 Z" fill="#1b2a6b"/>
-                <ellipse cx="31" cy="45" rx="4.5" ry="7" fill="#12081f"/>
-                <ellipse cx="28" cy="39" rx="1.4" ry="2.2" fill="#7fa0ff" opacity="0.75"/>
-            </svg>`;
 
             for (let i = 0; i < featherCount; i++) {
                 setTimeout(() => {

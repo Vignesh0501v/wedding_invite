@@ -637,7 +637,8 @@ footer {
     position: fixed;
     pointer-events: none;
     z-index: 1999;
-    width: 34px;
+    width: 30px;
+    height: 72px;
     filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));
     animation: featherDrift var(--duration) ease-out forwards;
 }

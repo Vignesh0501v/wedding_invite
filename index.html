@@ -402,12 +402,21 @@
 
             // Peacock feathers sweeping up and outward
             const featherCount = isMobile ? 8 : 12;
-            const featherSvg = `<svg viewBox="0 0 60 100" width="100%" height="100%">
-                <path d="M30 2 C50 20 55 62 30 96 C5 62 10 20 30 2 Z" fill="#177a5e"/>
-                <ellipse cx="30" cy="46" rx="16" ry="27" fill="#eec53f"/>
-                <ellipse cx="30" cy="46" rx="10" ry="18" fill="#1d4e89"/>
-                <ellipse cx="30" cy="46" rx="4" ry="7.5" fill="#241033"/>
-                <line x1="30" y1="94" x2="30" y2="100" stroke="#7a5230" stroke-width="2"/>
+            const featherSvg = `<svg viewBox="0 0 60 140" width="100%" height="100%">
+                <path d="M30 90 C10 72 8 38 30 8 C52 38 50 72 30 90 Z" fill="#2f8f5b" opacity="0.32"/>
+                <g stroke="#3f7a4e" stroke-width="0.7" opacity="0.55" fill="none">
+                    <path d="M30 128 L10 116"/><path d="M30 120 L6 106"/><path d="M30 112 L4 96"/>
+                    <path d="M30 104 L5 84"/><path d="M30 96 L8 72"/><path d="M30 88 L12 60"/>
+                    <path d="M30 128 L50 116"/><path d="M30 120 L54 106"/><path d="M30 112 L56 96"/>
+                    <path d="M30 104 L55 84"/><path d="M30 96 L52 72"/><path d="M30 88 L48 60"/>
+                </g>
+                <path d="M30 138 L30 15" stroke="#8a6a3a" stroke-width="1.4"/>
+                <ellipse cx="30" cy="46" rx="19" ry="30" fill="none" stroke="#caa23e" stroke-width="2.5"/>
+                <ellipse cx="30" cy="46" rx="15" ry="24" fill="#2f8f5b"/>
+                <ellipse cx="30" cy="46" rx="11" ry="18" fill="#e8c04a"/>
+                <path d="M30 29 C41 34 43 51 31 61 C20 56 18 39 30 29 Z" fill="#1b2a6b"/>
+                <ellipse cx="31" cy="45" rx="4.5" ry="7" fill="#12081f"/>
+                <ellipse cx="28" cy="39" rx="1.4" ry="2.2" fill="#7fa0ff" opacity="0.75"/>
             </svg>`;
 
             for (let i = 0; i < featherCount; i++) {

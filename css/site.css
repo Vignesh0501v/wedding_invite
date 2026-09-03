@@ -776,7 +776,27 @@ body.vibe-mode .scroll-circle {
     text-align: center;
     height: 100vh;
     width: 100vw;
-    animation: fadeOutIntro 2s ease 3s forwards;
+    cursor: pointer;
+}
+
+#intro-screen.dismiss {
+    animation: fadeOutIntro 0.9s ease forwards;
+    pointer-events: none;
+}
+
+.intro-tap-hint {
+    margin-top: 38px;
+    font-family: 'Lato', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.7);
+    animation: pulseHint 1.8s ease-in-out infinite;
+}
+
+@keyframes pulseHint {
+    0%, 100% { opacity: 0.35; }
+    50% { opacity: 1; }
 }
 
 .intro-content {
@@ -822,7 +842,7 @@ body.vibe-mode .scroll-circle {
 .glass-overlay {
     opacity: 0;
     transform: translateY(40px);
-    animation: heroReveal 1.5s ease 3.2s forwards;
+    animation: heroReveal 1s ease 0.3s forwards;
 }
 
 @keyframes heroReveal {

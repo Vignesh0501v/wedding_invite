@@ -49,6 +49,7 @@
         <div class="intro-content">
             <h1 class="intro-title">Mohan 💕 Devi</h1>
             <p class="intro-sub">A Beautiful Beginning</p>
+            <p class="intro-tap-hint">Tap to Begin</p>
         </div>
     </div>
 
@@ -212,6 +213,8 @@
         // =========================================================
         const COUPLE_NAMES = "Mohan & Devi";
         const VENUE_NAME = "Sri Kumutavalli Thirumana Arangam, Minjur";
+        const VENUE_MAPS_LINK = "https://maps.app.goo.gl/pU86tTjyft6tfi2u5"; // exact pinned location
+        const VENUE_COORDS = "13.275774,80.260014"; // resolved from the link above, used for the embedded map
         const RSVP_WHATSAPP_DEVI = "919080567475";
         const RSVP_WHATSAPP_MOHAN = "916381777273";
         const MUHURTHAM_START = "2026-09-13T06:30:00";
@@ -237,8 +240,8 @@
             const calLink = document.getElementById('calendar-link');
             calLink.href = `http://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('Wedding of ' + COUPLE_NAMES)}&dates=${calStart}/${calEnd}&details=${encodeURIComponent('Join us at ' + VENUE_NAME + '!')}&location=${mapQuery}`;
 
-            document.getElementById('directions-link').href = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
-            document.getElementById('map-embed').src = `https://www.google.com/maps?q=${mapQuery}&output=embed`;
+            document.getElementById('directions-link').href = VENUE_MAPS_LINK;
+            document.getElementById('map-embed').src = `https://www.google.com/maps?q=${VENUE_COORDS}&output=embed`;
 
             const rsvpText = encodeURIComponent(`Hi! I am delighted to attend your wedding! See you there.`);
             document.getElementById('rsvp-devi').href = `https://wa.me/${RSVP_WHATSAPP_DEVI}?text=${rsvpText}`;
@@ -293,11 +296,15 @@
         setInterval(updateTimer, 1000);
         updateTimer();
 
-        // 5. MUSIC — auto-starts once the intro screen finishes. Browsers that
-        // block unrequested autoplay get a fallback: playback starts on the
-        // visitor's first tap/click anywhere on the page instead.
+        // 5. MUSIC — mobile browsers only allow audible playback as a direct
+        // result of a user tap, so the intro screen itself IS that tap: the
+        // first touch/click anywhere on it dismisses it and starts the song
+        // in the same gesture. (A blind auto-play attempt with no tap is
+        // silently blocked by iOS/Android browsers, which is why it used to
+        // only start once you clicked something on the page.)
         const bgMusic = document.getElementById('bg-music');
         const musicBtn = document.querySelector('.music-control');
+        const introScreen = document.getElementById('intro-screen');
 
         function setMusicUI(isPlaying) {
             const icon = musicBtn.querySelector('i');
@@ -307,25 +314,30 @@
             if (tooltip) tooltip.style.display = 'none';
         }
 
-        function startMusicOnFirstInteraction() {
-            const start = () => {
-                bgMusic.play().then(() => setMusicUI(true)).catch(() => {});
-            };
-            document.addEventListener('click', start, { once: true });
-            document.addEventListener('touchstart', start, { once: true });
+        function playMusic() {
+            bgMusic.play().then(() => setMusicUI(true)).catch(() => {});
         }
 
-        // Roughly matches when #intro-screen finishes fading out (~4.2s)
+        function enterSite() {
+            introScreen.classList.add('dismiss');
+            playMusic();
+        }
+        introScreen.addEventListener('click', enterSite, { once: true });
+        introScreen.addEventListener('touchstart', enterSite, { once: true });
+
+        // Safety net: if nobody taps the intro within 6s, dismiss it anyway so
+        // no one is stuck on a black screen — music then starts on whatever
+        // they tap next, anywhere on the page.
         setTimeout(() => {
-            const p = bgMusic.play();
-            if (p && p.then) {
-                p.then(() => setMusicUI(true)).catch(startMusicOnFirstInteraction);
-            }
-        }, 4200);
+            if (introScreen.classList.contains('dismiss')) return;
+            introScreen.classList.add('dismiss');
+            document.addEventListener('click', playMusic, { once: true });
+            document.addEventListener('touchstart', playMusic, { once: true });
+        }, 6000);
 
         function toggleMusic(btn) {
             if (bgMusic.paused) {
-                bgMusic.play().then(() => setMusicUI(true)).catch(() => {});
+                playMusic();
             } else {
                 bgMusic.pause();
                 setMusicUI(false);

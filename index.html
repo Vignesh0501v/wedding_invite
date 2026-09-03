@@ -61,7 +61,7 @@
         <span class="music-tooltip">Tap for Magic!</span>
         <i class="fas fa-music"></i>
     </div>
-    <audio id="bg-music" loop>
+    <audio id="bg-music" loop preload="auto" playsinline>
         <source src="audio/background_music.mp3" type="audio/mpeg">
     </audio>
 
@@ -315,19 +315,31 @@
         }
 
         function playMusic() {
-            bgMusic.play().then(() => setMusicUI(true)).catch(() => {});
+            if (!bgMusic.paused) return;
+            const p = bgMusic.play();
+            if (p && p.then) {
+                p.then(() => setMusicUI(true)).catch(() => {
+                    // This particular gesture event wasn't accepted as a valid
+                    // "unlock" by the browser — a later event in the same tap
+                    // (e.g. touchend/click after touchstart) often is, so we
+                    // deliberately keep retrying rather than giving up here.
+                });
+            }
         }
 
-        let entered = false;
+        let dismissed = false;
         function enterSite() {
-            if (entered) return;
-            entered = true;
-            introScreen.classList.add('dismiss');
+            if (!dismissed) {
+                dismissed = true;
+                introScreen.classList.add('dismiss');
+            }
             playMusic();
         }
-        // Bound to several gesture types for cross-browser reliability (iOS
-        // Safari in particular wants the tap to actually complete).
-        ['click', 'touchend', 'touchstart', 'keydown'].forEach(evt => {
+        // Bound to several gesture types for cross-browser reliability — iOS
+        // Safari in particular only accepts *some* of these as a valid audio
+        // "unlock" gesture, and which one varies by version, so every event
+        // gets its own attempt instead of stopping after the first.
+        ['touchstart', 'touchend', 'click', 'keydown'].forEach(evt => {
             introScreen.addEventListener(evt, enterSite, { passive: true });
         });
 

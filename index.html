@@ -399,6 +399,37 @@
                     setTimeout(() => heart.remove(), 1500);
                 }, i * 60);
             }
+
+            // Peacock feathers sweeping up and outward
+            const featherCount = isMobile ? 8 : 12;
+            const featherSvg = `<svg viewBox="0 0 60 100" width="100%" height="100%">
+                <path d="M30 2 C50 20 55 62 30 96 C5 62 10 20 30 2 Z" fill="#177a5e"/>
+                <ellipse cx="30" cy="46" rx="16" ry="27" fill="#eec53f"/>
+                <ellipse cx="30" cy="46" rx="10" ry="18" fill="#1d4e89"/>
+                <ellipse cx="30" cy="46" rx="4" ry="7.5" fill="#241033"/>
+                <line x1="30" y1="94" x2="30" y2="100" stroke="#7a5230" stroke-width="2"/>
+            </svg>`;
+
+            for (let i = 0; i < featherCount; i++) {
+                setTimeout(() => {
+                    const feather = document.createElement('div');
+                    feather.classList.add('flying-feather');
+                    feather.innerHTML = featherSvg;
+                    feather.style.left = centerX + 'px';
+                    feather.style.top = centerY + 'px';
+
+                    const sweepSpread = isMobile ? window.innerWidth * 1.5 : window.innerWidth * 0.8;
+                    const fx = (Math.random() - 0.5) * sweepSpread;
+                    const floatDuration = 4000 + Math.random() * 2500;
+
+                    feather.style.setProperty('--fx', `${fx}px`);
+                    feather.style.setProperty('--rot', `${(Math.random() - 0.5) * 300}deg`);
+                    feather.style.setProperty('--duration', `${floatDuration}ms`);
+
+                    document.body.appendChild(feather);
+                    setTimeout(() => feather.remove(), floatDuration);
+                }, i * 150);
+            }
         }
     </script>
 
